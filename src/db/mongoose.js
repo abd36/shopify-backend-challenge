@@ -11,5 +11,5 @@ mongoose.connect(process.env.MONGODB,
     })
     .catch((err) => {
         console.log("Could not connect to database...", err);
-        process.exit();
+        // process.exit();
     });
