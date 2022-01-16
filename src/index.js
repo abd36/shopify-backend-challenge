@@ -5,7 +5,6 @@ require("./db/mongoose");
 const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
-// const mongoose = require('mongoose');
 const itemsRouter = require("./routers/itemRouter");
 
 // App variables
@@ -18,10 +17,6 @@ const app = express();
 app.use(helmet())
 app.use(cors({ "origin": "*" }));
 app.use(express.json());
-
-app.get("/", (req, res) => {
-    res.send("reached /");
-});
 
 app.use("/api/items", itemsRouter);
 
