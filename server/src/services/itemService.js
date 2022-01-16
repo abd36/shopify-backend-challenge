@@ -18,18 +18,13 @@ exports.findAllItems = async (req, res) => {
 exports.updateItemById = async (req, res) => {
     try {
         const itemUpdate = req.body;
-        const deleting = req.body.deleted;
         const id = req.params.id;
 
         const oldItem = await Item.findById(id);
 
         if (oldItem) {
             await Item.findByIdAndUpdate(id, itemUpdate, { new: true, runValidators: true }).then((newItem) => {
-                if (deleting) {
-                    return res.status(204).json(newItem);
-                } else {
-                    return res.status(200).json(newItem);
-                }
+                return res.status(200).json(newItem);
             });
         } else {
             return res.status(404).send(`Item with ID ${id} not found`);
@@ -40,26 +35,27 @@ exports.updateItemById = async (req, res) => {
 }
 
 // delete item by id
-// exports.deleteItemById = async (req, res) => {
-//     try {
-//         const id = req.params.id;
-//         const deletedMessage = req.body.deletedMessage;
-//         let item = await Item.findById(id);
+exports.deleteItemById = async (req, res) => {
+    try {
+        const id = req.params.id;
+        let item = await Item.findById(id);
 
-//         if (item) {
-//             item.deleted = true;
-//             if (deletedMessage) { item.deletedMessage = deletedMessage; }
-//             await Item.findByIdAndUpdate(id, item, { new: true }).then((deletedItem) => {
-//                 return res.status(204).send()
-//             })
-//         } else {
-//             return res.status(404).send(`Item with ID ${id} not found`);
-//         }
-//     }
-//     catch (error) {
-//         return res.status(500).send(error.message);
-//     }
-// }
+        if (item) {
+            if (item.deleted == false) {
+                return res.status(400).send(`Item with ID ${id} is not flagged as deleted`);
+            }
+
+            await Item.findByIdAndDelete(id).then(() => {
+                return res.status(204).send();
+            });
+        } else {
+            return res.status(404).send(`Item with ID ${id} not found`);
+        }
+    }
+    catch (error) {
+        return res.status(500).send(error.message);
+    }
+}
 
 // create item
 exports.createItem = async (req, res) => {

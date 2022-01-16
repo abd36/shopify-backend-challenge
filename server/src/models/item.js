@@ -1,11 +1,6 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
-const validate = require('mongoose-validator');
-
-const nameValidator = validate({
-    validator: "isAlpha",
-    message: "Name must contain alphabetic characters only",
-})
+const validator = require('validator');
 
 const ItemSchema = new mongoose.Schema({
     name: {
@@ -14,17 +9,28 @@ const ItemSchema = new mongoose.Schema({
         unique: [true, "Item name already exists"],
         trim: true,
         minlength: [3, "Name must be at least 3 letters"],
-        validate: nameValidator,
+        validate: {
+            validator: (val) => validator.isAlpha(val, ["en-US"], { ignore: " " }),
+            message: "Name must contain only alphabetic characters"
+        }
     },
     quantity: {
         type: Number,
         min: [1, "Quantity must be at least 1"],
-        required: [true, "Quantity required"]
+        required: [true, "Quantity required"],
+        validate: {
+            validator: Number.isInteger,
+            message: "Quantity must be an integer"
+        }
     },
     price: {
         type: Number,
         min: [1, "Price must be at least $0.01"],
-        required: [true, "Price required"]
+        required: [true, "Price required"],
+        validate: {
+            validator: Number.isInteger,
+            message: "Price must be an integer"
+        }
     },
     deleted: {
         type: Boolean,
@@ -32,9 +38,10 @@ const ItemSchema = new mongoose.Schema({
     },
     deletedMessage: {
         type: String,
-        default: ""
+        default: "",
+        maxlength: [140, "Deleted message's length must be 140 characters or less"]
     }
 });
 
 ItemSchema.plugin(uniqueValidator, { message: "{PATH} must be unique" });
-module.exports = mongoose.model("Item", ItemSchema);
+module.exports = mongoose.model("Item", ItemSchema, "test_items");

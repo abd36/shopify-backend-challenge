@@ -6,11 +6,11 @@ const ItemService = require("../services/itemService");
 // get all items
 itemsRouter.get("/", ItemService.findAllItems);
 
-// update item by id and undelete
+// update item by id
 itemsRouter.put("/:id", ItemService.updateItemById);
 
 // delete item by id
-// itemsRouter.delete("/:id", ItemService.deleteItemById);
+itemsRouter.delete("/:id", ItemService.deleteItemById);
 
 // create item
 itemsRouter.post("/", ItemService.createItem);
