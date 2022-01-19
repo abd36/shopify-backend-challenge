@@ -83,7 +83,6 @@ exports.deleteItemById = async (req, res) => {
 // create item
 exports.createItem = async (req, res) => {
     try {
-        console.log(req.body);
         const item = new Item({
             name: req.body.name,
             quantity: req.body.quantity,
