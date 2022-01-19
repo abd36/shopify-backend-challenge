@@ -44,4 +44,4 @@ const ItemSchema = new mongoose.Schema({
 });
 
 ItemSchema.plugin(uniqueValidator, { message: "{PATH} must be unique" });
-module.exports = mongoose.model("Item", ItemSchema, "test_items");
+module.exports = mongoose.model("Item", ItemSchema, "items");

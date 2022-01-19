@@ -1,11 +1,34 @@
 const Item = require("../models/item");
 
-// get all items (deleted or undeleted)
-exports.findAllItems = async (req, res) => {
-    const filter = req.body;
-
+exports.findItem = async (req, res) => {
     try {
-        await Item.find(filter).then((items) => {
+        const id = req.params.id;
+
+        await Item.findById(id).then((item) => {
+            return res.status(200).send(item);
+        });
+    }
+    catch (error) {
+        return res.status(500).send(error.message);
+    }
+}
+
+// get all nondeleted items
+exports.findAllItems = async (req, res) => {
+    try {
+        await Item.find({ deleted: false }).then((items) => {
+            return res.status(200).send(items);
+        });
+    }
+    catch (error) {
+        return res.status(500).send(error.message);
+    }
+}
+
+// get all deleted items
+exports.findDeletedAllItems = async (req, res) => {
+    try {
+        await Item.find({ deleted: true }).then((items) => {
             return res.status(200).send(items);
         });
     }
@@ -60,6 +83,7 @@ exports.deleteItemById = async (req, res) => {
 // create item
 exports.createItem = async (req, res) => {
     try {
+        console.log(req.body);
         const item = new Item({
             name: req.body.name,
             quantity: req.body.quantity,

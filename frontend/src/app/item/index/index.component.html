@@ -1,0 +1,48 @@
+<div class="container">
+    <h1>Logistify</h1>
+  
+    <a href="#" routerLink="/item/create/" class="btn btn-success">Create New Item</a>
+    
+    <table class="table table-bordered">
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th width="220px">Action</th>
+      </tr>
+      <tr *ngFor="let item of items">
+        <td>{{ item._id }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.price/100 }}</td>
+        <td>
+          <a href="#" [routerLink]="['/item/', item._id, 'edit']" class="btn btn-info">Edit</a>
+          <a href="#" [routerLink]="['/item/', item._id, 'delete']" class="btn btn-info">Delete</a>
+        </td>
+      </tr>
+    </table>
+
+    <h4>Deleted items</h4>
+    <table class="table table-bordered">
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Comment</th>
+          <th width="220px">Action</th>
+        </tr>
+        <tr *ngFor="let item of deletedItems">
+          <td>{{ item._id }}</td>
+          <td>{{ item.name }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.price/100 }}</td>
+          <td>{{ item.deletedMessage }}</td>
+          <td>
+            <button type="button" (click)="restoreItem(item)" class="btn btn-success">Restore</button>
+            <button type="button" (click)="permanentlyDeleteItem(item._id)" class="btn btn-danger">Permanently delete</button>
+          </td>
+        </tr>
+      </table>
+ </div>

@@ -27,9 +27,10 @@ afterEach((done) => {
 // setup server
 const app = createServer();
 
+
 // tests
 
-// get all items
+// get all nondeleted items
 test("GET /", async () => {
     const items = await Item.insertMany([
         {
@@ -48,47 +49,6 @@ test("GET /", async () => {
 
     await supertest(app)
         .get("/api/items")
-        .expect(200)
-        .then((res) => {
-            // check the response type and length
-            expect(Array.isArray(res.body)).toBeTruthy();
-            expect(res.body.length).toEqual(2);
-
-            // check the response data
-            expect(res.body[0]._id).toBe(items[0].id);
-            expect(res.body[0].name).toBe(items[0].name);
-            expect(res.body[0].quantity).toBe(items[0].quantity);
-            expect(res.body[0].deleted).toBe(items[0].deleted);
-            expect(res.body[0].deletedMessage).toBe(items[0].deletedMessage);
-
-            expect(res.body[1]._id).toBe(items[1].id);
-            expect(res.body[1].name).toBe(items[1].name);
-            expect(res.body[1].quantity).toBe(items[1].quantity);
-            expect(res.body[1].deleted).toBe(items[1].deleted);
-            expect(res.body[1].deletedMessage).toBe(items[1].deletedMessage);
-        });
-});
-
-// get items not flagged as deleted
-test("GET /", async () => {
-    const items = await Item.insertMany([
-        {
-            name: "test item",
-            quantity: 1,
-            price: 1
-        },
-        {
-            name: "test item two",
-            quantity: 10,
-            price: 150,
-            deleted: true,
-            deletedMessage: "a message"
-        },
-    ]);
-
-    await supertest(app)
-        .get("/api/items")
-        .send({ deleted: false })
         .expect(200)
         .then((res) => {
             // check the response type and length
@@ -105,7 +65,7 @@ test("GET /", async () => {
 });
 
 // get items flagged as deleted
-test("GET /", async () => {
+test("GET /deleted", async () => {
     const items = await Item.insertMany([
         {
             name: "test item",
@@ -117,13 +77,12 @@ test("GET /", async () => {
             quantity: 10,
             price: 150,
             deleted: true,
-            deletedMessage: "a message"
+            deletedMessage: "message"
         },
     ]);
-
+    
     await supertest(app)
-        .get("/api/items")
-        .send({ deleted: true })
+        .get("/api/items/deleted")
         .expect(200)
         .then((res) => {
             // check the response type and length
@@ -138,7 +97,6 @@ test("GET /", async () => {
             expect(res.body[0].deletedMessage).toBe(items[1].deletedMessage);
         });
 });
-
 
 // create item
 test("POST /", async () => {
@@ -167,6 +125,8 @@ test("POST /", async () => {
             expect(item.name).toBe(data.name);
             expect(item.quantity).toBe(data.quantity);
             expect(item.price).toBe(data.price);
+            expect(item.deleted).toBe(false);
+            expect(item.deletedMessage).toBe("");
         });
 });
 
@@ -201,6 +161,8 @@ test("PUT /:id", async () => {
 			expect(updatedItem.name).toBe(data.name);
 			expect(updatedItem.quantity).toBe(data.quantity);
             expect(updatedItem.price).toBe(data.price);
+            expect(updatedItem.deleted).toBe(false);
+            expect(updatedItem.deletedMessage).toBe("");
         });
 });
 
@@ -230,6 +192,9 @@ test("PUT /:id", async () => {
 			// Check the data in the database
 			const deletedItem = await Item.findById(res.body._id);
 			expect(deletedItem).toBeTruthy();
+            expect(deletedItem.name).toBe(item.name);
+            expect(deletedItem.quantity).toBe(item.quantity);
+            expect(deletedItem.price).toBe(item.price);
             expect(deletedItem.deleted).toBe(data.deleted);
             expect(deletedItem.deletedMessage).toBe(data.deletedMessage);
         });
@@ -263,6 +228,9 @@ test("PUT /:id", async () => {
 			// Check the data in the database
 			const unDeletedItem = await Item.findById(res.body._id);
 			expect(unDeletedItem).toBeTruthy();
+            expect(unDeletedItem.name).toBe(item.name);
+            expect(unDeletedItem.quantity).toBe(item.quantity);
+            expect(unDeletedItem.price).toBe(item.price);
             expect(unDeletedItem.deleted).toBe(unDeleteData.deleted);
             expect(unDeletedItem.deletedMessage).toBe(unDeleteData.deletedMessage);
         });
