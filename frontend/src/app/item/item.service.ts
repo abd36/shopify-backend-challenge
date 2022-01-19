@@ -12,7 +12,7 @@ import { Item } from './item';
 
 export class ItemService {
 
-  private apiURL: string = "http://3.85.162.95:3000/api/items/";
+  private apiURL: string = "https://guarded-fjord-97076.herokuapp.com/api/items/";
 
   httpOptions = {
     headers: new HttpHeaders({
