@@ -1,0 +1,1 @@
+/items/* http://3.85.162.95:3000/api/items/:splat 200!
