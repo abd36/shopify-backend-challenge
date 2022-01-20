@@ -51,8 +51,10 @@ To view this application on your local machine instead of viewing the [live site
     `private apiURL: string = "localhost:3000/api/items/";`
 
 
-6. Open a new terminal in the frontend folder and enter the command: `$ npm start`
+6. Open a new terminal in the frontend folder and enter commands: 
 
+    `$ npm install`
+    `$ npm start`
 
 To run unit tests on the backend:
 
