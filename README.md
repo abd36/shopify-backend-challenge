@@ -48,7 +48,7 @@ To view this application on your local machine instead of viewing the [live site
 
 6. In /frontend/src/app/item/item.service.ts, change line 15 to:
 
-    `private apiURL: string = "localhost:3000/api/items/";`
+    `private apiURL: string = "http://localhost:3000/api/items/";`
 
 
 6. Open a new terminal in the frontend folder and enter commands: 
