@@ -2,6 +2,7 @@ const express = require("express");
 const helmet = require("helmet");
 const cors = require("cors");
 const itemsRouter = require("./routers/itemRouter");
+const warehouseRouter = require("./routers/warehouseRouter");
 
 function createServer() {
     const app = express();
@@ -11,6 +12,7 @@ function createServer() {
     app.use(express.json());
 
     app.use("/api/items", itemsRouter);
+    app.use("/api/warehouses", warehouseRouter);
 
     return app;
 }
