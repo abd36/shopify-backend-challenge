@@ -1,5 +1,6 @@
 const Warehouse = require("../models/warehouse");
 
+// create warehouse
 exports.createWarehouse = async (req, res) => {
     try {
         const warehouse = new Warehouse({
@@ -12,6 +13,73 @@ exports.createWarehouse = async (req, res) => {
         })
     }
 
+    catch (error) {
+        return res.status(500).send(error.message);
+    }
+}
+
+// get all warehouses
+exports.getAllWarehouses = async (req, res) => {
+    try {
+        await Warehouse.find().then((warehouses) => {
+            return res.status(200).send(warehouses);
+        });
+    }
+    catch (error) {
+        res.status(500).send(error.message);
+    }
+}
+
+// get warehouse by id
+exports.getWarehouseById = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        await Warehouse.findById(id).then((warehouse) => {
+            return res.status(200).send(warehouse);
+        })
+    }
+    catch (error) {
+        return res.status(500).send(error.message);
+    }
+}
+
+// update warehouse by id
+exports.updateWarehouseById = async (req, res) => {
+    try {
+        const warehouseUpdate = req.body;
+        const id = req.params.id;
+
+        const oldWarehouse = await Warehouse.findById(id);
+
+        if (oldWarehouse) {
+            await Warehouse.findByIdAndUpdate(id, warehouseUpdate, { new: true, runValidators: true })
+            .then((newWarehouse) => {
+                return res.status(200).json(newWarehouse);
+            });
+        } else {
+            return res.status(404).send(`Warehouse with ID ${id} not found`);
+        }
+    }
+    catch (error) {
+        return res.status(500).send(error.message);
+    }
+}
+
+// delete warehouse by id
+exports.deleteWarehouseById = async (req, res) => {
+    try {
+        const id = req.params.id;
+        let warehouse = await Warehouse.findById(id);
+
+        if (warehouse) {
+            await Warehouse.findByIdAndDelete(id).then(() => {
+                return res.status(204).send();
+            });
+        } else {
+            return res.status(404).send(`Warehouse with ID ${id} not found`);
+        }
+    }
     catch (error) {
         return res.status(500).send(error.message);
     }
