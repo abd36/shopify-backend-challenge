@@ -8,7 +8,9 @@ const supertest = require('supertest');
 beforeEach((done) => {
     // connect to mongodb
     mongoose.connect(process.env.MONGODB, { useNewUrlParser: true })
-        .then(() => { done(); })
+        .then(() => {
+            done();
+        })
         .catch((err) => {
             console.log("Could not connect to database...", err);
             process.exit();
