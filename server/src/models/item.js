@@ -32,6 +32,11 @@ const ItemSchema = new mongoose.Schema({
             message: "Price must be an integer"
         }
     },
+    warehouse_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Warehouse",
+        default: null
+    },
     deleted: {
         type: Boolean,
         default: false
