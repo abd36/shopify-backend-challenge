@@ -82,8 +82,6 @@ exports.deleteItemById = async (req, res) => {
 
 // create item
 exports.createItem = async (req, res) => {
-    console.log(req.body.warehouse_id);
-
     try {
         const item = new Item({
             name: req.body.name,
