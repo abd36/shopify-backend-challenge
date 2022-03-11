@@ -21,13 +21,13 @@ export class IndexComponent implements OnInit {
   refreshAllItems(): void {
     this.itemService.getAllItems().subscribe((data: Item[]) => {
       this.items = data;
-      console.log("items")
+      console.log("items");
       console.log(this.items);
     });
 
     this.itemService.getAllDeletedItems().subscribe((data: Item[]) => {
       this.deletedItems = data;
-      console.log("deleted items")
+      console.log("deleted items");
       console.log(this.deletedItems);
     });
   }
