@@ -2,6 +2,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const createServer = require("../server");
 const Item = require("../models/item");
+const Warehouse = require("../models/warehouse");
 const supertest = require('supertest');
 
 // run before each test
@@ -20,9 +21,11 @@ beforeEach((done) => {
 // run after each test
 afterEach((done) => {
     // drop items collection
-    Item.collection.drop(() => {
-        // close mongodb connection
-        mongoose.connection.close(() => { done(); })
+    Warehouse.collection.drop(() => {
+        Item.collection.drop(() => {
+            // close mongodb connection
+            mongoose.connection.close(() => { done(); })
+        });
     });
 });
 
@@ -61,6 +64,7 @@ test("GET /", async () => {
             expect(res.body[0]._id).toBe(items[0].id);
             expect(res.body[0].name).toBe(items[0].name);
             expect(res.body[0].quantity).toBe(items[0].quantity);
+            expect(res.body[0].warehouse_id).toBe(items[0].warehouse_id);
             expect(res.body[0].deleted).toBe(items[0].deleted);
             expect(res.body[0].deletedMessage).toBe(items[0].deletedMessage);
         });
@@ -95,12 +99,13 @@ test("GET /deleted", async () => {
             expect(res.body[0]._id).toBe(items[1].id);
             expect(res.body[0].name).toBe(items[1].name);
             expect(res.body[0].quantity).toBe(items[1].quantity);
+            expect(res.body[0].warehouse_id).toBe(items[1].warehouse_id);
             expect(res.body[0].deleted).toBe(items[1].deleted);
             expect(res.body[0].deletedMessage).toBe(items[1].deletedMessage);
         });
 });
 
-// create item
+// create item with no warehouse
 test("POST /", async () => {
     const data = {
         name: "test item",
@@ -118,6 +123,7 @@ test("POST /", async () => {
             expect(res.body.name).toBe(data.name);
             expect(res.body.quantity).toBe(data.quantity);
             expect(res.body.price).toBe(data.price);
+            expect(res.body.warehouse_id).toBe(null);
             expect(res.body.deleted).toBe(false);
             expect(res.body.deletedMessage).toBe("");
 
@@ -127,6 +133,67 @@ test("POST /", async () => {
             expect(item.name).toBe(data.name);
             expect(item.quantity).toBe(data.quantity);
             expect(item.price).toBe(data.price);
+            expect(item.warehouse_id).toBe(null);
+            expect(item.deleted).toBe(false);
+            expect(item.deletedMessage).toBe("");
+        });
+});
+
+// create item with incorrect warehouse
+test("POST /", async () => {
+    const data = {
+        name: "test item",
+        quantity: 10,
+        price: 11,
+        warehouse_id: "wrong_id"
+    };
+
+    await supertest(app)
+        .post("/api/items")
+        .send(data)
+        .expect(500)
+        .then(async (res) => {
+            // check the response
+            expect(res.body).toStrictEqual({});
+        });
+});
+
+// create item with warehouse
+test("POST /", async () => {
+    const warehouse = await Warehouse.create({
+        name: "toronto",
+        address: "620 King St W, Toronto, ON M5V 1M6"
+    })
+
+    const data = {
+        name: "test item",
+        quantity: 10,
+        price: 11,
+        warehouse_id: warehouse.id
+    };
+
+    await supertest(app)
+        .post("/api/items")
+        .send(data)
+        .expect(201)
+        .then(async (res) => {
+            // check the response
+            expect(res.body._id).toBeTruthy();
+            expect(res.body.name).toBe(data.name);
+            expect(res.body.quantity).toBe(data.quantity);
+            expect(res.body.price).toBe(data.price);
+            expect(res.body.warehouse_id).toStrictEqual(warehouse.id);
+            expect(res.body.deleted).toBe(false);
+            expect(res.body.deletedMessage).toBe("");
+
+            // check item in the database
+            const item = await Item.findById(res.body._id);
+            
+            expect(item).toBeTruthy();
+            expect(item.name).toBe(data.name);
+            expect(item.quantity).toBe(data.quantity);
+            expect(item.price).toBe(data.price);
+            expect(item.warehouse_id).toStrictEqual(new mongoose.Types.ObjectId(warehouse.id));
             expect(item.deleted).toBe(false);
             expect(item.deletedMessage).toBe("");
         });
@@ -163,6 +230,95 @@ test("PUT /:id", async () => {
 			expect(updatedItem.name).toBe(data.name);
 			expect(updatedItem.quantity).toBe(data.quantity);
             expect(updatedItem.price).toBe(data.price);
+            expect(updatedItem.deleted).toBe(false);
+            expect(updatedItem.deletedMessage).toBe("");
+        });
+});
+
+// change item's warehouse
+test("PUT /:id", async () => {
+    const warehouse = await Warehouse.create({
+        name: "toronto",
+        address: "620 King St W, Toronto, ON M5V 1M6"
+    })
+
+    const item = await Item.create({
+        name: "test item",
+        quantity: 1,
+        price: 1
+    });
+
+    const data = {
+        name: "updated test item",
+        quantity: 10,
+        price: 10,
+        warehouse_id: warehouse.id
+    };
+
+    await supertest(app)
+        .put("/api/items/" + item.id)
+        .send(data)
+        .expect(200)
+        .then(async (res) => {
+            // check the response
+			expect(res.body._id).toBe(item.id);
+			expect(res.body.name).toBe(data.name);
+			expect(res.body.quantity).toBe(data.quantity);
+            expect(res.body.price).toBe(data.price);
+            expect(res.body.warehouse_id).toStrictEqual(data.warehouse_id);
+
+			// Check the item in the database
+			const updatedItem = await Item.findById(res.body._id);
+			expect(updatedItem).toBeTruthy();
+			expect(updatedItem.name).toBe(data.name);
+			expect(updatedItem.quantity).toBe(data.quantity);
+            expect(updatedItem.price).toBe(data.price);
+            expect(updatedItem.warehouse_id).toStrictEqual(new mongoose.Types.ObjectId(data.warehouse_id));
+            expect(updatedItem.deleted).toBe(false);
+            expect(updatedItem.deletedMessage).toBe("");
+        });
+});
+
+// remove item's warehouse
+test("PUT /:id", async () => {
+    const warehouse = await Warehouse.create({
+        name: "toronto",
+        address: "620 King St W, Toronto, ON M5V 1M6"
+    })
+
+    const item = await Item.create({
+        name: "test item",
+        quantity: 1,
+        price: 1,
+        warehouse_id: warehouse.id
+    });
+
+    const data = {
+        name: "updated test item",
+        quantity: 10,
+        price: 10,
+        warehouse_id: null
+    };
+
+    await supertest(app)
+        .put("/api/items/" + item.id)
+        .send(data)
+        .expect(200)
+        .then(async (res) => {
+            // check the response
+			expect(res.body._id).toBe(item.id);
+			expect(res.body.name).toBe(data.name);
+			expect(res.body.quantity).toBe(data.quantity);
+            expect(res.body.price).toBe(data.price);
+            expect(res.body.warehouse_id).toBe(data.warehouse_id);
+
+			// Check the item in the database
+			const updatedItem = await Item.findById(res.body._id);
+			expect(updatedItem).toBeTruthy();
+			expect(updatedItem.name).toBe(data.name);
+			expect(updatedItem.quantity).toBe(data.quantity);
+            expect(updatedItem.price).toBe(data.price);
+            expect(updatedItem.warehouse_id).toBe(data.warehouse_id);
             expect(updatedItem.deleted).toBe(false);
             expect(updatedItem.deletedMessage).toBe("");
         });
