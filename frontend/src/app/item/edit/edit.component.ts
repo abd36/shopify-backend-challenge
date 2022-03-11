@@ -3,6 +3,8 @@ import { ItemService } from '../item.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Item } from '../item';
 import { FormGroup, FormControl, Validators} from '@angular/forms';
+import { Warehouse } from 'src/app/warehouse/warehouse';
+import { WarehouseService } from 'src/app/warehouse/warehouse.service';
 
 @Component({
   selector: 'app-edit',
@@ -14,14 +16,21 @@ export class EditComponent implements OnInit {
   _id!: string;
   item!: Item;
   form!: FormGroup;
+  warehouses: Warehouse[] = [];
 
   constructor(
     public itemService: ItemService,
+    public warehouseService: WarehouseService,
     private route: ActivatedRoute,
     private router: Router
   ) { }
 
   ngOnInit(): void {
+    this.warehouseService.getAllWarehouses().subscribe((data) => {
+      this.warehouses = data;
+      console.log(this.warehouses);
+    })
+
     this._id = this.route.snapshot.params['itemId'];
     this.itemService.getItem(this._id).subscribe((data: Item) => {
       this.item = data;
@@ -32,7 +41,8 @@ export class EditComponent implements OnInit {
     this.form = new FormGroup({
       name: new FormControl('', [Validators.required]),
       quantity: new FormControl(1, [Validators.required]),
-      price: new FormControl(0.05, [Validators.required])
+      price: new FormControl(0.05, [Validators.required]),
+      warehouse_id: new FormControl(null)
     })
   }
 

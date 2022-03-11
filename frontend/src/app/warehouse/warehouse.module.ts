@@ -3,17 +3,20 @@ import { CommonModule } from '@angular/common';
 
 import { WarehouseRoutingModule } from './warehouse-routing.module';
 import { CreateComponent } from './create/create.component';
-import { EditComponent } from './edit/edit.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IndexComponent } from './index/index.component';
 
 
 @NgModule({
   declarations: [
     CreateComponent,
-    EditComponent
+    IndexComponent
   ],
   imports: [
     CommonModule,
-    WarehouseRoutingModule
+    WarehouseRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
   ]
 })
 export class WarehouseModule { }

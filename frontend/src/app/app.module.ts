@@ -6,6 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { ItemModule } from './item/item.module';
+import { WarehouseModule } from './warehouse/warehouse.module';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { ItemModule } from './item/item.module';
     BrowserModule,
     AppRoutingModule,
     ItemModule,
+    WarehouseModule,
     HttpClientModule
   ],
   providers: [],

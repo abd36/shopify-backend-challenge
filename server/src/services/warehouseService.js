@@ -1,4 +1,6 @@
+const item = require("../models/item");
 const Warehouse = require("../models/warehouse");
+const Item = require("../models/item");
 
 // create warehouse
 exports.createWarehouse = async (req, res) => {
@@ -73,6 +75,9 @@ exports.deleteWarehouseById = async (req, res) => {
         let warehouse = await Warehouse.findById(id);
 
         if (warehouse) {
+            // set all matching items' warehouse id's to null
+            await Item.updateMany({ warehouse_id: id }, { warehouse_id: null },)
+
             await Warehouse.findByIdAndDelete(id).then(() => {
                 return res.status(204).send();
             });

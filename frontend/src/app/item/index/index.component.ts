@@ -15,7 +15,10 @@ export class IndexComponent implements OnInit {
   deletedItems: Item[] = [];
   warehouses: { [_id: string]: string[]; } = {};
 
-  constructor(public itemService: ItemService, public warehouseService: WarehouseService) { }
+  constructor(
+    public itemService: ItemService,
+    public warehouseService: WarehouseService
+  ) { }
 
   ngOnInit(): void {
     this.refreshAllItems();
@@ -26,11 +29,12 @@ export class IndexComponent implements OnInit {
       for (const warehouse of data.values()) {
         this.warehouses[warehouse._id] = [warehouse.name, warehouse.address];
       }
+      console.log("warehouses");
+      console.log(this.warehouses);
       
       this.itemService.getAllItems().subscribe((data: Item[]) => {
         this.items = data;
         console.log("items");
-        console.log(data);
         console.log(this.items);
       });
   
