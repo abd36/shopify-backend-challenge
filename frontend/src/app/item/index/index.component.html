@@ -2,8 +2,8 @@
   <h1>Logistify</h1>
 
   <br>
-  <a href="#" routerLink="/warehouse/create/" class="btn btn-success warehouse-link">Create New Warehouse</a>
-  <a href="#" routerLink="/warehouse/manage/" class="btn btn-success warehouse-link">View Warehouses</a>
+  <a href="#" routerLink="/warehouse/create/" class="btn btn-success btn-padding">Create New Warehouse</a>
+  <a href="#" routerLink="/warehouse/manage/" class="btn btn-success">View Warehouses</a>
 
   <br>
   <br>
@@ -33,7 +33,7 @@
         <td>{{ (item.warehouse_id !== null ? warehouses[item.warehouse_id][0] : "N/A") }}</td>
         <td>{{ (item.warehouse_id !== null ? warehouses[item.warehouse_id][1] : "N/A") }}</td>
         <td>
-          <a href="#" [routerLink]="['/item/', item._id, 'edit']" class="btn btn-info">Edit</a>
+          <a href="#" [routerLink]="['/item/', item._id, 'edit']" class="btn btn-info btn-padding">Edit</a>
           <a href="#" [routerLink]="['/item/', item._id, 'delete']" class="btn btn-danger">Delete</a>
         </td>
       </tr>
