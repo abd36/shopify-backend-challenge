@@ -12,6 +12,8 @@
       <th>Name</th>
       <th>Quantity</th>
       <th>Price</th>
+      <th>Warehouse</th>
+      <th>Location</th>
       <th width="220px">Action</th>
     </tr>
     <tr *ngFor="let item of items">
@@ -19,6 +21,8 @@
       <td>{{ item.name }}</td>
       <td>{{ item.quantity }}</td>
       <td>{{ item.price/100 }}</td>
+      <td>{{ (item.warehouse_id !== null ? warehouses[item.warehouse_id][0] : "N/A") }}</td>
+      <td>{{ (item.warehouse_id !== null ? warehouses[item.warehouse_id][1] : "N/A") }}</td>
       <td>
         <a href="#" [routerLink]="['/item/', item._id, 'edit']" class="btn btn-info">Edit</a>
         <a href="#" [routerLink]="['/item/', item._id, 'delete']" class="btn btn-danger">Delete</a>
