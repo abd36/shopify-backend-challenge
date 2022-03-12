@@ -1,4 +1,5 @@
 const Item = require("../models/item");
+const errorHandler = require("./errorHandler");
 
 exports.findItem = async (req, res) => {
     try {
@@ -37,26 +38,6 @@ exports.findDeletedAllItems = async (req, res) => {
     }
 }
 
-// update item by id
-exports.updateItemById = async (req, res) => {
-    try {
-        const itemUpdate = req.body;
-        const id = req.params.id;
-
-        const oldItem = await Item.findById(id);
-
-        if (oldItem) {
-            await Item.findByIdAndUpdate(id, itemUpdate, { new: true, runValidators: true }).then((newItem) => {
-                return res.status(200).json(newItem);
-            });
-        } else {
-            return res.status(404).send(`Item with ID ${id} not found`);
-        }
-    } catch (error) {
-        return res.status(500).send(error.message);
-    }
-}
-
 // delete item by id
 exports.deleteItemById = async (req, res) => {
     try {
@@ -81,7 +62,7 @@ exports.deleteItemById = async (req, res) => {
 }
 
 // create item
-exports.createItem = async (req, res) => {
+exports.createItem = async (req, res, next) => {
     try {
         const item = new Item({
             name: req.body.name,
@@ -95,6 +76,26 @@ exports.createItem = async (req, res) => {
         });
     }
     catch (error) {
-        return res.status(500).send(error.message);
+        next(error);
+    }
+}
+
+// update item by id
+exports.updateItemById = async (req, res, next) => {
+    try {
+        const itemUpdate = req.body;
+        const id = req.params.id;
+
+        const oldItem = await Item.findById(id);
+
+        if (oldItem) {
+            await Item.findByIdAndUpdate(id, itemUpdate, { new: true, runValidators: true }).then((newItem) => {
+                return res.status(200).json(newItem);
+            });
+        } else {
+            return res.status(404).send(`Item with ID ${id} not found`);
+        }
+    } catch (error) {
+        next(error);
     }
 }

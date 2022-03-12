@@ -42,6 +42,10 @@
                 <option *ngFor="let warehouse of warehouses" [ngValue]="warehouse._id">{{ warehouse.name }}</option>
             </select>
         </div>
+
+        <div *ngIf="errorMessage" class="alert alert-danger">
+            {{errorMessage}}
+        </div>
          
         <button class="btn btn-primary" type="submit" [disabled]="!form.valid">Update</button>
     </form>

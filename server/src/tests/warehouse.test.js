@@ -19,7 +19,7 @@ beforeEach((done) => {
 
 // run after each test
 afterEach((done) => {
-    // drop items collection
+    // drop warehouse collection
     Warehouse.collection.drop(() => {
         // close mongodb connection
         mongoose.connection.close(() => { done(); })

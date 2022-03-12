@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ItemService } from '../item.service';
 import { Router } from '@angular/router';
-import { FormGroup, FormControl, Validators, MinValidator} from '@angular/forms';
+import { FormGroup, FormControl, Validators, MinValidator } from '@angular/forms';
 import { Warehouse } from 'src/app/warehouse/warehouse';
 import { WarehouseService } from 'src/app/warehouse/warehouse.service';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Item } from '../item';
 
 @Component({
   selector: 'app-create',
@@ -14,6 +18,7 @@ export class CreateComponent implements OnInit {
 
   form!: FormGroup;
   warehouses: Warehouse[] = [];
+  errorMessage?: string;
 
   constructor(
     public itemService: ItemService,
@@ -24,7 +29,6 @@ export class CreateComponent implements OnInit {
   ngOnInit(): void {
     this.warehouseService.getAllWarehouses().subscribe((data) => {
       this.warehouses = data;
-      console.log(this.warehouses);
     })
 
     this.form = new FormGroup({
@@ -42,10 +46,20 @@ export class CreateComponent implements OnInit {
   submit() {
     this.form.value.price = this.form.value.price * 100
     console.log(this.form.value);
-    this.itemService.createItem(this.form.value).subscribe((res: any) => {
-      console.log('Item created');
-      this.router.navigateByUrl('item/index');
-    })
-  }
 
+    this.itemService.createItem(this.form.value)
+      .pipe(
+        catchError((error) => {
+          console.log(error);
+          this.errorMessage = error;
+          return of(null);
+        })
+      ).subscribe((res) => {
+        console.log(res)
+        if (res) {
+          console.log('Item created');
+          this.router.navigateByUrl('item/index');
+        }
+      })
+  }
 }

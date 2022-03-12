@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
 const validator = require('validator');
 
 const WarehouseSchema = new mongoose.Schema({
@@ -24,5 +23,4 @@ const WarehouseSchema = new mongoose.Schema({
     }
 })
 
-WarehouseSchema.plugin(uniqueValidator, { message: "{PATH} must be unique" });
 module.exports = mongoose.model("Warehouse", WarehouseSchema, "warehouses");

@@ -1,26 +1,29 @@
 <div class="container">
     <h1>Delete Item</h1>
    
-    <a href="#" routerLink="/item/index" class="btn btn-primary">Back</a>
+    <a href="#" routerLink="/item/index" class="btn btn-primary btn-margin">Back</a>
         
     <br>
 
-    <h5>Name: {{item.name}}</h5>
-    <h5>Quantity: {{item.quantity}}</h5>
-    <h5>Price: {{item.price/100}}</h5>
+    <div *ngIf="item">
+        <h5>Name: {{item.name}}</h5>
+        <h5>Quantity: {{item.quantity}}</h5>
+        <h5>Price: {{item.price/100}}</h5>
+        <h5>Warehouse: {{warehouseName}}</h5>
+    </div>
 
     <form [formGroup]="form" (ngSubmit)="submit()">
 
         <div class="form-group">
-            <label for="deletedMessage">Delete Comment:</label>
+            <label for="deletedMessage">Delete Comment ( <=140 chars)</label>
             <input 
                 formControlName="deletedMessage"
                 id="deletedMessage" 
-                type="text" 
-                [(ngModel)]="item.deletedMessage"
+                type="text"
+                maxlength="140"
                 class="form-control">
         </div>
          
-        <button class="btn btn-primary" type="submit">Delete</button>
+        <button class="btn btn-primary btn-margin" type="submit" [disabled]="!form.valid">Delete</button>
     </form>
 </div>

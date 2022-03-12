@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { WarehouseService } from '../warehouse.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, MinValidator} from '@angular/forms';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-create',
@@ -11,6 +12,7 @@ import { FormGroup, FormControl, Validators, MinValidator} from '@angular/forms'
 export class CreateComponent implements OnInit {
 
   form!: FormGroup;
+  errorMessage?: string;
 
   constructor(
     public warehouseService: WarehouseService,
@@ -30,10 +32,21 @@ export class CreateComponent implements OnInit {
 
   submit() {
     console.log(this.form.value);
-    this.warehouseService.createWarehouse(this.form.value).subscribe((res: any) => {
-      console.log('Warehouse created');
-      this.router.navigateByUrl('warehouse/manage');
-    })
+
+    this.warehouseService.createWarehouse(this.form.value)
+      .pipe(
+        catchError((error) => {
+          console.log(error);
+          this.errorMessage = error;
+          return of(null);
+        })
+      ).subscribe((res) => {
+        console.log(res)
+        if (res) {
+          console.log('Warehouse created');
+          this.router.navigateByUrl('warehouse/manage');
+        }
+      })
   }
 
 }

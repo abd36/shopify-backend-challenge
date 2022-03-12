@@ -3,6 +3,7 @@ const helmet = require("helmet");
 const cors = require("cors");
 const itemsRouter = require("./routers/itemRouter");
 const warehouseRouter = require("./routers/warehouseRouter");
+const errorHandler = require("./services/errorHandler");
 
 function createServer() {
     const app = express();
@@ -13,6 +14,8 @@ function createServer() {
 
     app.use("/api/items", itemsRouter);
     app.use("/api/warehouses", warehouseRouter);
+
+    app.use(errorHandler);
 
     return app;
 }

@@ -39,24 +39,28 @@
   <br>
   <div *ngIf="deletedItems.length">
     <h4>Deleted items</h4>
-    <table class="table table-bordered">
+    <table class="table table-bordered" id="delete-table">
       <thead>
         <tr>
           <th>ID</th>
           <th>Name</th>
           <th>Quantity</th>
           <th>Price</th>
+          <th>Warehouse</th>
+          <th>Location</th>
           <th>Comment</th>
           <th width="220px">Action</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let item of deletedItems">
-          <td>{{ item._id }}</td>
+          <td id="delete-td">{{ item._id }}</td>
           <td>{{ item.name }}</td>
           <td>{{ item.quantity }}</td>
           <td>{{ item.price/100 }}</td>
-          <td>{{ item.deletedMessage }}</td>
+          <td>{{ (item.warehouse_id !== null ? warehouses[item.warehouse_id][0] : "N/A") }}</td>
+          <td>{{ (item.warehouse_id !== null ? warehouses[item.warehouse_id][1] : "N/A") }}</td>
+          <td id="delete-td">{{ item.deletedMessage }}</td>
           <td>
             <button type="button" (click)="restoreItem(item)" class="btn btn-success">Restore</button>
             <button type="button" (click)="permanentlyDeleteItem(item._id)" class="btn btn-danger">Permanently

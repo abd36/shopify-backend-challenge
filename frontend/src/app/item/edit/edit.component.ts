@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ItemService } from '../item.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Item } from '../item';
-import { FormGroup, FormControl, Validators} from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Warehouse } from 'src/app/warehouse/warehouse';
 import { WarehouseService } from 'src/app/warehouse/warehouse.service';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'app-edit',
@@ -17,6 +18,7 @@ export class EditComponent implements OnInit {
   item!: Item;
   form!: FormGroup;
   warehouses: Warehouse[] = [];
+  errorMessage?: string;
 
   constructor(
     public itemService: ItemService,
@@ -29,7 +31,7 @@ export class EditComponent implements OnInit {
     this.warehouseService.getAllWarehouses().subscribe((data) => {
       this.warehouses = data;
     })
-    
+
     this.form = new FormGroup({
       name: new FormControl('', [Validators.required]),
       quantity: new FormControl(1, [Validators.required]),
@@ -48,7 +50,7 @@ export class EditComponent implements OnInit {
       this.form.get("price")?.setValue(this.item.price);
       this.form.get("warehouse_id")?.setValue(this.item.warehouse_id);
     });
-    
+
 
   }
 
@@ -59,10 +61,20 @@ export class EditComponent implements OnInit {
   submit() {
     this.form.value.price = this.form.value.price * 100
     console.log(this.form.value);
-    this.itemService.updateItem(this._id, this.form.value).subscribe((res) => {
-      console.log("item updated");
-      this.router.navigateByUrl("item/index");
-    })
-  }
 
+    this.itemService.updateItem(this._id, this.form.value)
+      .pipe(
+        catchError((error) => {
+          console.log(error);
+          this.errorMessage = error;
+          return of(null);
+        })
+      ).subscribe((res) => {
+        console.log(res)
+        if (res) {
+          console.log("item updated");
+          this.router.navigateByUrl("item/index");
+        }
+      })
+  }
 }
