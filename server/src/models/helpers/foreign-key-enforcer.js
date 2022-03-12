@@ -3,7 +3,7 @@ module.exports = (FKModel, FK_id) => {
         if (FK_id === null) { return resolve(true); }
 
         FKModel.findById(FK_id).then((FKResource) => {
-            return (FKResource !== null ? resolve(true) : reject(false));
+            return (FKResource !== null ? resolve(true) : resolve(false));
         })
     })
 }

@@ -3,7 +3,7 @@ const Warehouse = require("../models/warehouse");
 const Item = require("../models/item");
 
 // create warehouse
-exports.createWarehouse = async (req, res) => {
+exports.createWarehouse = async (req, res, next) => {
     try {
         const warehouse = new Warehouse({
             name: req.body.name,
@@ -16,7 +16,7 @@ exports.createWarehouse = async (req, res) => {
     }
 
     catch (error) {
-        return res.status(500).send(error.message);
+        next(error);
     }
 }
 
@@ -47,7 +47,7 @@ exports.getWarehouseById = async (req, res) => {
 }
 
 // update warehouse by id
-exports.updateWarehouseById = async (req, res) => {
+exports.updateWarehouseById = async (req, res, next) => {
     try {
         const warehouseUpdate = req.body;
         const id = req.params.id;
@@ -64,7 +64,7 @@ exports.updateWarehouseById = async (req, res) => {
         }
     }
     catch (error) {
-        return res.status(500).send(error.message);
+        next(error);
     }
 }
 

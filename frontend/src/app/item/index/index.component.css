@@ -1,3 +1,12 @@
 .btn-padding {
     margin-right: 1em;
 }
+
+#delete-td {
+    white-space: normal !important; 
+    word-wrap: break-word;
+}
+
+#delete-table {
+    table-layout: fixed;
+}

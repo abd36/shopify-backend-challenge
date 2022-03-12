@@ -39,8 +39,9 @@ export class ItemService {
   }
 
   createItem(item: Item): Observable<any> {
+    console.log("create");
     return this.httpClient.post(this.apiURL, JSON.stringify(item), this.httpOptions)
-      .pipe(catchError(this.errorHandler));
+    .pipe(catchError(this.errorHandler));
   }
 
   updateItem(id: string, item: Item): Observable<any> {
@@ -55,13 +56,14 @@ export class ItemService {
   }
 
   errorHandler(error: any) {
+    console.log(error.error);
     let errorMessage = '';
 
     if (error.error instanceof ErrorEvent) {
       errorMessage = error.error.message;
     } else {
-      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+      errorMessage = `Error Code: ${error.status} -- ${error.error.message}`;
     }
-    return throwError(errorMessage);
+    return throwError(() => errorMessage);
   }
 }

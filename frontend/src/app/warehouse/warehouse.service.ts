@@ -48,13 +48,14 @@ export class WarehouseService {
   }
 
   errorHandler(error: any) {
+    console.log(error.error);
     let errorMessage = '';
 
     if (error.error instanceof ErrorEvent) {
       errorMessage = error.error.message;
     } else {
-      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+      errorMessage = `Error Code: ${error.status} -- ${error.error.message}`;
     }
-    return throwError(errorMessage);
+    return throwError(() => errorMessage);
   }
 }
