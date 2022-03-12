@@ -9,7 +9,9 @@
             <label for="name">Name (unique, only letters and spaces, >= 3 chars)</label>
             <input 
                 formControlName="name"
-                id="name" 
+                id="name"
+                pattern="^[a-z][a-z\s]*$"
+                minlength="3"
                 type="text" 
                 class="form-control">
         </div>
@@ -19,7 +21,8 @@
             <input 
                 formControlName="address"
                 id="address" 
-                type="text" 
+                type="text"
+                minlength="5"
                 class="form-control">
         </div>
 
