@@ -32,7 +32,7 @@ export class CreateComponent implements OnInit {
     console.log(this.form.value);
     this.warehouseService.createWarehouse(this.form.value).subscribe((res: any) => {
       console.log('Warehouse created');
-      this.router.navigateByUrl('item/index');
+      this.router.navigateByUrl('warehouse/manage');
     })
   }
 
