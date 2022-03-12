@@ -3,7 +3,7 @@
    
     <a href="#" routerLink="/item/index" class="btn btn-primary">Back</a>
           
-    <form [formGroup]="form" (ngSubmit)="submit()">
+    <form [formGroup]="form" (ngSubmit)="submit()" *ngIf="item">
 
         <div class="form-group">
             <label for="name">Name (unique, only letters and spaces, >=3 chars)</label>

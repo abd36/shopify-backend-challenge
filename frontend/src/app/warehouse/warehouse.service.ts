@@ -11,7 +11,8 @@ import { Warehouse } from './warehouse';
 })
 export class WarehouseService {
 
-  private apiURL: string = "http://localhost:3000/api/warehouses/";
+  private apiURL: string = "https://guarded-fjord-97076.herokuapp.com/api/warehouses/";
+  // private apiURL: string = "http://localhost:3000/api/warehouses/";
 
   httpOptions = {
     headers: new HttpHeaders({
