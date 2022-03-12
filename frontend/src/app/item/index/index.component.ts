@@ -14,6 +14,8 @@ export class IndexComponent implements OnInit {
   items: Item[] = [];
   deletedItems: Item[] = [];
   warehouses: { [_id: string]: string[]; } = {};
+  itemsLoaded: boolean = false;
+  deletedItemsLoaded: boolean = false;
 
   constructor(
     public itemService: ItemService,
@@ -34,12 +36,14 @@ export class IndexComponent implements OnInit {
       
       this.itemService.getAllItems().subscribe((data: Item[]) => {
         this.items = data;
+        this.itemsLoaded = true;
         console.log("items");
         console.log(this.items);
       });
   
       this.itemService.getAllDeletedItems().subscribe((data: Item[]) => {
         this.deletedItems = data;
+        this.deletedItemsLoaded = true;
         console.log("deleted items");
         console.log(this.deletedItems);
       });

@@ -7,7 +7,13 @@
 
   <br>
   <br>
-  <table class="table table-bordered">
+  <div class="d-flex justify-content-center" *ngIf="!(itemsLoaded || deletedItemsLoaded)">
+    <br>
+    <br>
+    <div class="spinner-border" role="status"></div>
+  </div>
+  
+  <table class="table table-bordered" *ngIf="itemsLoaded">
     <thead>
       <tr>
         <th>ID</th>
@@ -37,7 +43,7 @@
 
   <br>
   <br>
-  <div *ngIf="deletedItems.length">
+  <div *ngIf="deletedItems.length && deletedItemsLoaded">
     <h4>Deleted items</h4>
     <table class="table table-bordered" id="delete-table">
       <thead>
