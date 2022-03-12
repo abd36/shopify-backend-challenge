@@ -1,7 +1,7 @@
 <div class="container">
     <h1>Update Item</h1>
    
-    <a href="#" routerLink="/item/index" class="btn btn-primary">Back</a>
+    <a href="#" routerLink="/item/index" class="btn btn-primary btn-margin">Back</a>
           
     <form [formGroup]="form" (ngSubmit)="submit()" *ngIf="item">
 
@@ -11,6 +11,8 @@
                 formControlName="name"
                 id="name" 
                 type="text"
+                pattern="^[a-z][a-z\s]*$"
+                minlength="3"
                 class="form-control">
         </div>
            
@@ -47,6 +49,6 @@
             {{errorMessage}}
         </div>
          
-        <button class="btn btn-primary" type="submit" [disabled]="!form.valid">Update</button>
+        <button class="btn btn-primary btn-margin" type="submit" [disabled]="!form.valid">Update</button>
     </form>
 </div>
