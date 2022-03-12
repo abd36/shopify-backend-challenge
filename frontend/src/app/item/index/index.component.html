@@ -2,55 +2,68 @@
   <h1>Logistify</h1>
 
   <br>
-  <a href="#" routerLink="/item/create/" class="btn btn-success">Create New Item</a>
+  <a href="#" routerLink="/item/create/" class="btn btn-success btn-padding">Create New Item</a>
+  <a href="#" routerLink="/warehouse/manage/" class="btn btn-success">Manage Warehouses</a>
 
   <br>
   <br>
-  <table class="table-bordered">
-    <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Quantity</th>
-      <th>Price</th>
-      <th width="220px">Action</th>
-    </tr>
-    <tr *ngFor="let item of items">
-      <td>{{ item._id }}</td>
-      <td>{{ item.name }}</td>
-      <td>{{ item.quantity }}</td>
-      <td>{{ item.price/100 }}</td>
-      <td>
-        <a href="#" [routerLink]="['/item/', item._id, 'edit']" class="btn btn-info">Edit</a>
-        <a href="#" [routerLink]="['/item/', item._id, 'delete']" class="btn btn-danger">Delete</a>
-      </td>
-    </tr>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Warehouse</th>
+        <th>Location</th>
+        <th width="220px">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of items">
+        <td>{{ item._id }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.price/100 }}</td>
+        <td>{{ (item.warehouse_id !== null ? warehouses[item.warehouse_id][0] : "N/A") }}</td>
+        <td>{{ (item.warehouse_id !== null ? warehouses[item.warehouse_id][1] : "N/A") }}</td>
+        <td>
+          <a href="#" [routerLink]="['/item/', item._id, 'edit']" class="btn btn-info btn-padding">Edit</a>
+          <a href="#" [routerLink]="['/item/', item._id, 'delete']" class="btn btn-danger">Delete</a>
+        </td>
+      </tr>
+    </tbody>
   </table>
 
   <br>
   <br>
   <div *ngIf="deletedItems.length">
     <h4>Deleted items</h4>
-    <table class="table-bordered">
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Quantity</th>
-        <th>Price</th>
-        <th>Comment</th>
-        <th width="220px">Action</th>
-      </tr>
-      <tr *ngFor="let item of deletedItems">
-        <td>{{ item._id }}</td>
-        <td>{{ item.name }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>{{ item.price/100 }}</td>
-        <td>{{ item.deletedMessage }}</td>
-        <td>
-          <button type="button" (click)="restoreItem(item)" class="btn btn-success">Restore</button>
-          <button type="button" (click)="permanentlyDeleteItem(item._id)" class="btn btn-danger">Permanently
-            delete</button>
-        </td>
-      </tr>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Comment</th>
+          <th width="220px">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of deletedItems">
+          <td>{{ item._id }}</td>
+          <td>{{ item.name }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.price/100 }}</td>
+          <td>{{ item.deletedMessage }}</td>
+          <td>
+            <button type="button" (click)="restoreItem(item)" class="btn btn-success">Restore</button>
+            <button type="button" (click)="permanentlyDeleteItem(item._id)" class="btn btn-danger">Permanently
+              delete</button>
+          </td>
+        </tr>
+      </tbody>
     </table>
   </div>
 </div>

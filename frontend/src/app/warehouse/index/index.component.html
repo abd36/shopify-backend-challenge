@@ -1,0 +1,33 @@
+<div class="container">
+  <h1>Warehouses</h1>
+
+  <br>
+  <a href="#" routerLink="/warehouse/create/" class="btn btn-success btn-padding">Create New Warehouse</a>
+  
+
+  <br>
+  <br>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Address</th>
+        <th width="220px">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let warehouse of warehouses">
+        <td>{{ warehouse._id }}</td>
+        <td>{{ warehouse.name }}</td>
+        <td>{{ warehouse.address }}</td>
+        <td>
+          <button type="button" (click)="deleteWarehouse(warehouse._id)" class="btn btn-danger">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <br>
+  <a href="#" routerLink="/item/index" class="btn btn-primary">Back</a>
+</div>

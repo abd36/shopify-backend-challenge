@@ -86,7 +86,8 @@ exports.createItem = async (req, res) => {
         const item = new Item({
             name: req.body.name,
             quantity: req.body.quantity,
-            price: req.body.price
+            price: req.body.price,
+            warehouse_id: req.body.warehouse_id
         });
 
         await item.save().then((newItem) => {

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const validator = require('validator');
+const FKEnforcer = require('./helpers/foreign-key-enforcer');
 
 const ItemSchema = new mongoose.Schema({
     name: {
@@ -32,6 +33,18 @@ const ItemSchema = new mongoose.Schema({
             message: "Price must be an integer"
         }
     },
+    warehouse_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Warehouse",
+        default: null,
+        validate: {
+            isAsync: true,
+            validator: function(warehouse_id) {
+                return FKEnforcer(mongoose.model("Warehouse"), warehouse_id);
+            },
+            message: "Warehouse doesn't exist"
+        }
+    },
     deleted: {
         type: Boolean,
         default: false
@@ -44,4 +57,5 @@ const ItemSchema = new mongoose.Schema({
 });
 
 ItemSchema.plugin(uniqueValidator, { message: "{PATH} must be unique" });
+
 module.exports = mongoose.model("Item", ItemSchema, "items");

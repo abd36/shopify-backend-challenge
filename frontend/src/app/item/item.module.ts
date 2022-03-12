@@ -9,6 +9,8 @@ import { DeleteComponent } from './delete/delete.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { WarehouseModule } from '../warehouse/warehouse.module';
+
 @NgModule({
   declarations: [
     IndexComponent,
@@ -20,7 +22,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     ItemRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    WarehouseModule
   ]
 })
 export class ItemModule { }

@@ -3,15 +3,14 @@
    
     <a href="#" routerLink="/item/index" class="btn btn-primary">Back</a>
           
-    <form [formGroup]="form" (ngSubmit)="submit()">
+    <form [formGroup]="form" (ngSubmit)="submit()" *ngIf="item">
 
         <div class="form-group">
-            <label for="name">Name (unique and only letters and spaces)</label>
+            <label for="name">Name (unique, only letters and spaces, >=3 chars)</label>
             <input 
                 formControlName="name"
                 id="name" 
-                type="text" 
-                [(ngModel)]="item.name"
+                type="text"
                 class="form-control">
             <div *ngIf="f['name'].touched && f['name'].invalid" class="alert alert-danger">
                 <div *ngIf="f['name'].errors && f['name'].errors['required']">Name is required.</div>
@@ -25,7 +24,6 @@
                 id="quantity" 
                 type="number" 
                 min="1"
-                [(ngModel)]="item.quantity"
                 class="form-control">
             <div *ngIf="f['quantity'].touched && f['quantity'].invalid" class="alert alert-danger">
                 <div *ngIf="f['quantity'].errors && f['quantity'].errors['required']">Quantity is required.</div>
@@ -38,10 +36,20 @@
                 formControlName="price"
                 id="price" 
                 type="number" 
-                [(ngModel)]="item.price"
                 class="form-control"
                 min="0.01"
                 step="0.05">
+            <div *ngIf="f['price'].touched && f['price'].invalid" class="alert alert-danger">
+                <div *ngIf="f['price'].errors && f['price'].errors['required']">Price is required.</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="warehouse_id">Warehouse</label>
+            <select formControlName="warehouse_id" class="form-control">
+                <option [ngValue]="null">None</option>
+                <option *ngFor="let warehouse of warehouses" [ngValue]="warehouse._id">{{ warehouse.name }}</option>
+            </select>
             <div *ngIf="f['price'].touched && f['price'].invalid" class="alert alert-danger">
                 <div *ngIf="f['price'].errors && f['price'].errors['required']">Price is required.</div>
             </div>

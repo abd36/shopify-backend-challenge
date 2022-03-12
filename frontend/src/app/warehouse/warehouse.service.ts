@@ -4,16 +4,15 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { Item } from './item';
+import { Warehouse } from './warehouse';
 
 @Injectable({
   providedIn: 'root'
 })
+export class WarehouseService {
 
-export class ItemService {
-
-  private apiURL: string = "https://guarded-fjord-97076.herokuapp.com/api/items/";
-  // private apiURL: string = "http://localhost:3000/api/items/";
+  private apiURL: string = "https://guarded-fjord-97076.herokuapp.com/api/warehouses/";
+  // private apiURL: string = "http://localhost:3000/api/warehouses/";
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -23,33 +22,27 @@ export class ItemService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getAllItems(): Observable<any> {
+  getAllWarehouses(): Observable<any> {
     return this.httpClient.get(this.apiURL)
       .pipe(catchError(this.errorHandler));
   }
 
-  getAllDeletedItems(): Observable<any> {
-    return this.httpClient.get(this.apiURL + 'deleted')
-      .pipe(catchError(this.errorHandler));
-  }
-
-  getItem(id: string): Observable<any> {
+  getWarehouse(id: string): Observable<any> {
     return this.httpClient.get(this.apiURL + id)
       .pipe(catchError(this.errorHandler));
   }
 
-  createItem(item: Item): Observable<any> {
-    return this.httpClient.post(this.apiURL, JSON.stringify(item), this.httpOptions)
+  createWarehouse(warehouse: Warehouse): Observable<any> {
+    return this.httpClient.post(this.apiURL, JSON.stringify(warehouse), this.httpOptions)
       .pipe(catchError(this.errorHandler));
   }
 
-  updateItem(id: string, item: Item): Observable<any> {
-    return this.httpClient.put(this.apiURL + id, JSON.stringify(item), this.httpOptions)
+  updateWarehouse(id: string, warehouse: Warehouse): Observable<any> {
+    return this.httpClient.put(this.apiURL + id, JSON.stringify(warehouse), this.httpOptions)
       .pipe(catchError(this.errorHandler));
   }
 
-  deleteItem(id: string) {
-    console.log(this.apiURL + id)
+  deleteWarehouse(id: string) {
     return this.httpClient.delete(this.apiURL + id, this.httpOptions)
       .pipe(catchError(this.errorHandler));
   }

@@ -3,6 +3,7 @@ export interface Item {
     name: string,
     quantity: number,
     price: number,
+    warehouse_id: string,
     deleted: boolean,
     deletedMessage: string
 };

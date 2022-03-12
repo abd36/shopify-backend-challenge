@@ -1,7 +1,7 @@
 const express = require("express");
 const Item = require("../models/item");
-const itemsRouter = express.Router();
 const ItemService = require("../services/itemService");
+const itemsRouter = express.Router();
 
 
 // get all nondeleted items
