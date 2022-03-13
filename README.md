@@ -72,7 +72,7 @@ To view this application on your local machine instead of viewing the [live site
 
 ## Unit tests
 
-The backend uses Jest and Supertest for to unit test the item and warehouse API endpoints. There are 12 unit tests for item APIs, and 5 unit tests for warehouse APIs. These tests evaluate the CRUD functionality, response status codes, and the cloud MongoDB instance.
+The backend uses Jest and Supertest for to unit test the item and warehouse API endpoints. There are 13 unit tests for item APIs, and 7 unit tests for warehouse APIs. These tests evaluate the CRUD functionality, response status codes, and the cloud MongoDB instance.
 
 ### To run unit tests:
 
