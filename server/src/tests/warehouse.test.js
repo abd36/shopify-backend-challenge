@@ -112,6 +112,58 @@ test("POST /", async () => {
         });
 });
 
+// create warehouse with duplicate name
+test("POST /", async () => {
+    const warehouse = await Warehouse.create({
+        name: "toronto",
+        address: "620 King St W, Toronto, ON M5V 1M6"
+    });
+
+    const data = {
+        name: "toronto",
+        address: "150 Elgin Street, Ottawa, ON, Canada K2P 1L4"
+    };
+
+    await supertest(app)
+        .post("/api/warehouses")
+        .send(data)
+        .expect(400)
+        .then(async (res) => {
+            // check item in the database
+            const warehouses = await Warehouse.find();
+            expect(warehouses).toBeTruthy();
+            expect(warehouses.length).toEqual(1);
+            expect(warehouses[0].name).toBe(warehouse.name);
+            expect(warehouses[0].address).toBe(warehouse.address);
+        });
+});
+
+// create warehouse with duplicate address
+test("POST /", async () => {
+    const warehouse = await Warehouse.create({
+        name: "toronto",
+        address: "620 King St W, Toronto, ON M5V 1M6"
+    });
+
+    const data = {
+        name: "ottawa",
+        address: "620 King St W, Toronto, ON M5V 1M6"
+    };
+
+    await supertest(app)
+        .post("/api/warehouses")
+        .send(data)
+        .expect(400)
+        .then(async (res) => {
+            // check item in the database
+            const warehouses = await Warehouse.find();
+            expect(warehouses).toBeTruthy();
+            expect(warehouses.length).toEqual(1);
+            expect(warehouses[0].name).toBe(warehouse.name);
+            expect(warehouses[0].address).toBe(warehouse.address);
+        });
+});
+
 // update warehouse
 test("PUT /:id", async () => {
     const warehouse = await Warehouse.create({

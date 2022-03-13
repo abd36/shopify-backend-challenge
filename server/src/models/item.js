@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const uniqueValidator = require('mongoose-unique-validator');
 const FKEnforcer = require('./helpers/foreign-key-enforcer');
 
 const ItemSchema = new mongoose.Schema({
@@ -55,4 +56,5 @@ const ItemSchema = new mongoose.Schema({
     }
 });
 
+ItemSchema.plugin(uniqueValidator, {message: "{PATH} already exists"});
 module.exports = mongoose.model("Item", ItemSchema, "items");

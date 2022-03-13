@@ -87,7 +87,7 @@ test("GET /deleted", async () => {
             deletedMessage: "message"
         },
     ]);
-    
+
     await supertest(app)
         .get("/api/items/deleted")
         .expect(200)
@@ -95,7 +95,7 @@ test("GET /deleted", async () => {
             // check the response type and length
             expect(Array.isArray(res.body)).toBeTruthy();
             expect(res.body.length).toEqual(1);
-            
+
             // check the response data
             expect(res.body[0]._id).toBe(items[1].id);
             expect(res.body[0].name).toBe(items[1].name);
@@ -103,6 +103,39 @@ test("GET /deleted", async () => {
             expect(res.body[0].warehouse_id).toBe(items[1].warehouse_id);
             expect(res.body[0].deleted).toBe(items[1].deleted);
             expect(res.body[0].deletedMessage).toBe(items[1].deletedMessage);
+        });
+});
+
+// create item with duplicate name
+test("POST /", async () => {
+    const item = await Item.create({
+        name: "test item",
+        quantity: 1,
+        price: 1
+    });
+
+    const data = {
+        name: "test item",
+        quantity: 10,
+        price: 11,
+    };
+
+    await supertest(app)
+        .post("/api/items")
+        .send(data)
+        .expect(400)
+        .then(async (res) => {
+            // check item in the database
+            const items = await Item.find();
+
+            expect(items).toBeTruthy();
+            expect(items.length).toEqual(1);
+            expect(items[0].name).toBe(item.name);
+            expect(items[0].quantity).toBe(item.quantity);
+            expect(items[0].price).toBe(item.price);
+            expect(items[0].warehouse_id).toBe(item.warehouse_id);
+            expect(items[0].deleted).toBe(item.deleted);
+            expect(items[0].deletedMessage).toBe(item.deletedMessage);
         });
 });
 
@@ -152,10 +185,15 @@ test("POST /", async () => {
     await supertest(app)
         .post("/api/items")
         .send(data)
-        .expect(500)
+        .expect(400)
         .then(async (res) => {
             // check the response
-            expect(res.body).toStrictEqual({});
+            expect('message' in res.body).toBeTruthy();
+            expect('fields' in res.body).toBeTruthy();
+
+            // check item in the database
+            const items = await Item.find();
+            expect(items.length).toEqual(0);
         });
 });
 
@@ -220,16 +258,16 @@ test("PUT /:id", async () => {
         .expect(200)
         .then(async (res) => {
             // check the response
-			expect(res.body._id).toBe(item.id);
-			expect(res.body.name).toBe(data.name);
-			expect(res.body.quantity).toBe(data.quantity);
+            expect(res.body._id).toBe(item.id);
+            expect(res.body.name).toBe(data.name);
+            expect(res.body.quantity).toBe(data.quantity);
             expect(res.body.price).toBe(data.price);
 
-			// Check the data in the database
-			const updatedItem = await Item.findById(res.body._id);
-			expect(updatedItem).toBeTruthy();
-			expect(updatedItem.name).toBe(data.name);
-			expect(updatedItem.quantity).toBe(data.quantity);
+            // Check the data in the database
+            const updatedItem = await Item.findById(res.body._id);
+            expect(updatedItem).toBeTruthy();
+            expect(updatedItem.name).toBe(data.name);
+            expect(updatedItem.quantity).toBe(data.quantity);
             expect(updatedItem.price).toBe(data.price);
             expect(updatedItem.deleted).toBe(false);
             expect(updatedItem.deletedMessage).toBe("");
@@ -262,17 +300,17 @@ test("PUT /:id", async () => {
         .expect(200)
         .then(async (res) => {
             // check the response
-			expect(res.body._id).toBe(item.id);
-			expect(res.body.name).toBe(data.name);
-			expect(res.body.quantity).toBe(data.quantity);
+            expect(res.body._id).toBe(item.id);
+            expect(res.body.name).toBe(data.name);
+            expect(res.body.quantity).toBe(data.quantity);
             expect(res.body.price).toBe(data.price);
             expect(res.body.warehouse_id).toStrictEqual(data.warehouse_id);
 
-			// Check the item in the database
-			const updatedItem = await Item.findById(res.body._id);
-			expect(updatedItem).toBeTruthy();
-			expect(updatedItem.name).toBe(data.name);
-			expect(updatedItem.quantity).toBe(data.quantity);
+            // Check the item in the database
+            const updatedItem = await Item.findById(res.body._id);
+            expect(updatedItem).toBeTruthy();
+            expect(updatedItem.name).toBe(data.name);
+            expect(updatedItem.quantity).toBe(data.quantity);
             expect(updatedItem.price).toBe(data.price);
             expect(updatedItem.warehouse_id).toStrictEqual(new mongoose.Types.ObjectId(data.warehouse_id));
             expect(updatedItem.deleted).toBe(false);
@@ -307,17 +345,17 @@ test("PUT /:id", async () => {
         .expect(200)
         .then(async (res) => {
             // check the response
-			expect(res.body._id).toBe(item.id);
-			expect(res.body.name).toBe(data.name);
-			expect(res.body.quantity).toBe(data.quantity);
+            expect(res.body._id).toBe(item.id);
+            expect(res.body.name).toBe(data.name);
+            expect(res.body.quantity).toBe(data.quantity);
             expect(res.body.price).toBe(data.price);
             expect(res.body.warehouse_id).toBe(data.warehouse_id);
 
-			// Check the item in the database
-			const updatedItem = await Item.findById(res.body._id);
-			expect(updatedItem).toBeTruthy();
-			expect(updatedItem.name).toBe(data.name);
-			expect(updatedItem.quantity).toBe(data.quantity);
+            // Check the item in the database
+            const updatedItem = await Item.findById(res.body._id);
+            expect(updatedItem).toBeTruthy();
+            expect(updatedItem.name).toBe(data.name);
+            expect(updatedItem.quantity).toBe(data.quantity);
             expect(updatedItem.price).toBe(data.price);
             expect(updatedItem.warehouse_id).toBe(data.warehouse_id);
             expect(updatedItem.deleted).toBe(false);
@@ -344,13 +382,13 @@ test("PUT /:id", async () => {
         .expect(200)
         .then(async (res) => {
             // check the response
-			expect(res.body._id).toBe(item.id);
+            expect(res.body._id).toBe(item.id);
             expect(res.body.deleted).toBe(data.deleted);
             expect(res.body.deletedMessage).toBe(data.deletedMessage);
 
-			// Check the data in the database
-			const deletedItem = await Item.findById(res.body._id);
-			expect(deletedItem).toBeTruthy();
+            // Check the data in the database
+            const deletedItem = await Item.findById(res.body._id);
+            expect(deletedItem).toBeTruthy();
             expect(deletedItem.name).toBe(item.name);
             expect(deletedItem.quantity).toBe(item.quantity);
             expect(deletedItem.price).toBe(item.price);
@@ -380,13 +418,13 @@ test("PUT /:id", async () => {
         .expect(200)
         .then(async (res) => {
             // check the response
-			expect(res.body._id).toBe(item.id);
+            expect(res.body._id).toBe(item.id);
             expect(res.body.deleted).toBe(unDeleteData.deleted);
             expect(res.body.deletedMessage).toBe(unDeleteData.deletedMessage);
 
-			// Check the data in the database
-			const unDeletedItem = await Item.findById(res.body._id);
-			expect(unDeletedItem).toBeTruthy();
+            // Check the data in the database
+            const unDeletedItem = await Item.findById(res.body._id);
+            expect(unDeletedItem).toBeTruthy();
             expect(unDeletedItem.name).toBe(item.name);
             expect(unDeletedItem.quantity).toBe(item.quantity);
             expect(unDeletedItem.price).toBe(item.price);

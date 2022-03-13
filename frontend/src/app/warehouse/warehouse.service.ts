@@ -11,8 +11,8 @@ import { Warehouse } from './warehouse';
 })
 export class WarehouseService {
 
-  private apiURL: string = "https://guarded-fjord-97076.herokuapp.com/api/warehouses/";
-  // private apiURL: string = "http://localhost:3000/api/warehouses/";
+  // private apiURL: string = "https://guarded-fjord-97076.herokuapp.com/api/warehouses/";
+  private apiURL: string = "http://localhost:3000/api/warehouses/";
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -54,8 +54,18 @@ export class WarehouseService {
     if (error.error instanceof ErrorEvent) {
       errorMessage = error.error.message;
     } else {
-      errorMessage = `Error Code: ${error.status} -- ${error.error.message}`;
+      if (error.error.message.length > 1) {
+        error.error.message.forEach((element: string, i: number) => {
+          if (i > 0) { errorMessage += '; '; }
+          errorMessage += element;
+        });
+      } else {
+        errorMessage = error.error.message;
+      }
+
+      errorMessage = `Error Code: ${error.status} -- ${errorMessage}`;
     }
+    
     return throwError(() => errorMessage);
   }
 }

@@ -1,21 +1,17 @@
 //error handler function
 module.exports = (err, req, res, next) => {
    console.log('error middleware');
-   if (err.code && err.code == 11000) return err = handleDuplicateKeyError(err, res);
-   else return res.status(500).send('An unknown error occured.');
 
-   try {
-      
-   } catch (err) {
-      console.log('caught error');
-      return res.status(500).send('An unknown error occured.');
-   }
+   if (err.errors) return handleValidationError(err, res);
+   else return res.status(500).send('An unknown error occured.');
 }
 
-const handleDuplicateKeyError = (err, res) => {
-   console.log(err);
-   const field = Object.keys(err.keyValue);
-   const code = 409;
-   const error = `This ${field} already exists.`;
-   return res.status(code).send({ message: error, fields: field });
+const handleValidationError = (err, res) => {
+   let errors = {};
+
+   Object.keys(err.errors).forEach((key) => {
+      errors[key] = err.errors[key].message;
+   });
+
+   return res.status(400).send({ message: Object.values(errors), fields: Object.keys(errors) });
 }

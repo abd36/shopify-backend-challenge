@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const uniqueValidator = require('mongoose-unique-validator');
 
 const WarehouseSchema = new mongoose.Schema({
     name: {
@@ -23,4 +24,5 @@ const WarehouseSchema = new mongoose.Schema({
     }
 })
 
+WarehouseSchema.plugin(uniqueValidator, {message: "{PATH} already exists"});
 module.exports = mongoose.model("Warehouse", WarehouseSchema, "warehouses");
